@@ -116,9 +116,18 @@ export default function VersionPanel() {
     [revertAgentVersion, selectedAgentId, versionIds],
   );
 
+  const versionCount = versionIds.length;
+  const countLabel =
+    versionCount > 0
+      ? localize(
+          versionCount === 1 ? 'com_ui_agent_version_count_one' : 'com_ui_agent_version_count',
+          { count: versionCount },
+        )
+      : null;
+
   return (
     <div className="scrollbar-gutter-stable h-full min-h-[40vh] overflow-auto pb-12 text-sm">
-      <header className="grid grid-cols-[auto_1fr_auto] items-center gap-2 px-2 pb-3 pt-1">
+      <header className="grid grid-cols-[auto_1fr_auto] items-center gap-2 px-2 pb-2 pt-1">
         <button
           type="button"
           onClick={() => setActivePanel(Panel.builder)}
@@ -127,12 +136,19 @@ export default function VersionPanel() {
         >
           <ChevronLeft className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
         </button>
-        <h2 className="text-center text-base font-semibold text-text-primary">
-          {localize('com_ui_agent_version_history')}
-        </h2>
+        <div className="flex flex-col items-center">
+          <h2 className="text-base font-semibold text-text-primary">
+            {localize('com_ui_agent_version_history')}
+          </h2>
+          {countLabel && (
+            <p className="text-xs text-text-secondary" aria-live="polite">
+              {countLabel}
+            </p>
+          )}
+        </div>
         <span aria-hidden="true" className="h-10 w-10" />
       </header>
-      <div className="flex flex-col gap-4 px-2">
+      <div className="flex flex-col px-2 pt-2">
         <VersionContent
           selectedAgentId={selectedAgentId}
           isLoading={isLoading}
