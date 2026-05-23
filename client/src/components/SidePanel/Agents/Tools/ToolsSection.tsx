@@ -4,7 +4,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
 import type { AgentForm } from '~/common';
 import type { AgentItem } from './items/types';
-import Section from '../Section';
 import ToolChip from './ToolChip';
 import ToolsMarketplaceDialog from './ToolsMarketplaceDialog';
 import { buildCatalog } from './items/catalog';
@@ -139,31 +138,30 @@ export default function ToolsSection({ agentId }: Props) {
   const isEmpty = selected.length === 0;
 
   return (
-    <Section
-      title={localize('com_ui_tools_section_title')}
-      badge={
-        selected.length > 0 ? (
-          <span className="ml-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-surface-tertiary px-1.5 text-xs font-medium text-text-secondary">
-            {selected.length}
-          </span>
-        ) : null
-      }
-      rightSlot={
+    <div className="mb-3 flex flex-col">
+      <div className="mb-1 flex items-center justify-between">
+        <label className="block text-[11px] font-medium uppercase tracking-wide text-text-secondary">
+          {localize('com_ui_tools_section_title')}
+          {selected.length > 0 && (
+            <span className="ml-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-surface-tertiary px-1.5 text-[10px] font-medium normal-case tracking-normal text-text-secondary">
+              {selected.length}
+            </span>
+          )}
+        </label>
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex h-7 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-text-secondary transition-colors hover:bg-surface-secondary hover:text-text-primary"
+          className="inline-flex h-7 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-text-secondary transition-colors hover:bg-surface-secondary hover:text-text-primary"
         >
           <Plus className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
           {localize('com_ui_add')}
         </button>
-      }
-    >
+      </div>
       {isEmpty ? (
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex w-full flex-col items-center gap-1 rounded-lg border border-dashed border-border-light px-2 py-4 text-text-tertiary transition-colors hover:border-border-medium hover:bg-surface-secondary hover:text-text-secondary"
+          className="flex w-full flex-col items-center gap-1 rounded-xl border border-dashed border-border-light px-2 py-4 text-text-tertiary transition-colors hover:border-border-medium hover:bg-surface-secondary hover:text-text-secondary"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           <span className="text-xs">{localize('com_ui_tools_empty')}</span>
@@ -181,6 +179,6 @@ export default function ToolsSection({ agentId }: Props) {
         </ul>
       )}
       {open && <ToolsMarketplaceDialog open={open} onOpenChange={setOpen} agentId={agentId} />}
-    </Section>
+    </div>
   );
 }

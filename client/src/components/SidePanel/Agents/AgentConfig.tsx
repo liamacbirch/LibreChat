@@ -10,7 +10,6 @@ import { icons } from '~/hooks/Endpoint/Icons';
 import Instructions from './Instructions';
 import ToolsSection from './Tools/ToolsSection';
 import AgentAvatar from './AgentAvatar';
-import Section from './Section';
 
 const inputClass = cn(
   defaultTextProps,
@@ -155,8 +154,11 @@ export default function AgentConfig() {
       {/* TOOLS — unified built-ins / tools / actions / mcp / skills */}
       <ToolsSection agentId={agent_id} />
 
-      {/* SUPPORT CONTACT — collapsed by default */}
-      <Section title={localize('com_ui_support_contact')} defaultOpen={false}>
+      {/* SUPPORT CONTACT */}
+      <div className="mb-3 flex flex-col">
+        <label className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-text-secondary">
+          {localize('com_ui_support_contact')}
+        </label>
         <div className="space-y-2">
           <Controller
             name="support_contact.name"
@@ -227,7 +229,7 @@ export default function AgentConfig() {
             )}
           />
         </div>
-      </Section>
+      </div>
     </div>
   );
 }
