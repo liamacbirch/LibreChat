@@ -13,6 +13,9 @@ pids
 *.seed
 .git
 
+# Brainstorming session artifacts (superpowers visual companion)
+.superpowers/
+
 # CI/CD data
 test-image*
 dump.rdb
