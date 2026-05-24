@@ -13,7 +13,8 @@ import { useAgentPanelContext } from '~/Providers';
 import MarketplaceSidebar from './MarketplaceSidebar';
 import MarketplaceCatalog from './MarketplaceCatalog';
 import CategoryFilter from './CategoryFilter';
-import DetailPane from './DetailPane/DetailPane';
+import ItemDialog from './ItemDialog/ItemDialog';
+import AddMcpServerDialog from './ItemDialog/AddMcpServerDialog';
 import { computeToggleAction } from './items/mutations';
 import { deriveSelectedItems } from './items/selectors';
 import { applyFilter } from './items/filtering';
@@ -75,12 +76,17 @@ export default function ToolsMarketplaceDialog({
   const [category, setCategory] = useState<string | 'all'>('all');
   const [search, setSearch] = useState('');
   const [detailItem, setDetailItem] = useState<AgentItem | null>(null);
+  const [addMcpOpen, setAddMcpOpen] = useState(false);
 
   const handleCreateNew = useCallback(
     (createKind: 'skill' | 'mcp' | 'action') => {
       if (createKind === 'skill') {
         navigate('/skills/new');
         onOpenChange(false);
+        return;
+      }
+      if (createKind === 'mcp') {
+        setAddMcpOpen(true);
         return;
       }
       showToast({ message: localize('com_ui_coming_soon'), status: 'info' });
@@ -225,14 +231,6 @@ export default function ToolsMarketplaceDialog({
     setDetailItem(item);
   }, []);
 
-  const handleRemoveFromDetail = useCallback(
-    (item: AgentItem) => {
-      handleToggle(item);
-      setDetailItem(null);
-    },
-    [handleToggle],
-  );
-
   return (
     <OGDialog open={open} onOpenChange={onOpenChange}>
       <OGDialogContent
@@ -286,12 +284,8 @@ export default function ToolsMarketplaceDialog({
             </div>
           </div>
         </div>
-        <DetailPane
-          item={detailItem}
-          agentId={agentId}
-          onClose={() => setDetailItem(null)}
-          onRemove={handleRemoveFromDetail}
-        />
+        <ItemDialog item={detailItem} agentId={agentId} onClose={() => setDetailItem(null)} />
+        <AddMcpServerDialog open={addMcpOpen} onOpenChange={setAddMcpOpen} />
       </OGDialogContent>
     </OGDialog>
   );

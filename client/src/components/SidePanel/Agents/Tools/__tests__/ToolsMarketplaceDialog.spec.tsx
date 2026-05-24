@@ -81,25 +81,13 @@ jest.mock('@librechat/client', () => {
   };
 });
 
-jest.mock('../DetailPane/BuiltinDetail', () => ({
+jest.mock('../ItemDialog/ItemDialog', () => ({
   __esModule: true,
-  default: () => <div data-testid="builtin-detail" />,
+  default: ({ item }: { item: unknown }) => (item ? <div data-testid="item-dialog" /> : null),
 }));
-jest.mock('../DetailPane/SkillDetail', () => ({
+jest.mock('../ItemDialog/AddMcpServerDialog', () => ({
   __esModule: true,
-  default: () => <div data-testid="skill-detail" />,
-}));
-jest.mock('../DetailPane/ToolDetail', () => ({
-  __esModule: true,
-  default: () => <div data-testid="tool-detail" />,
-}));
-jest.mock('../DetailPane/McpDetail', () => ({
-  __esModule: true,
-  default: () => <div data-testid="mcp-detail" />,
-}));
-jest.mock('../DetailPane/ActionDetail', () => ({
-  __esModule: true,
-  default: () => <div data-testid="action-detail" />,
+  default: ({ open }: { open: boolean }) => (open ? <div data-testid="add-mcp-dialog" /> : null),
 }));
 
 describe('ToolsMarketplaceDialog', () => {
@@ -149,7 +137,7 @@ describe('ToolsMarketplaceDialog', () => {
     mockSetValue.mockClear();
     render(<ToolsMarketplaceDialog open onOpenChange={jest.fn()} agentId="a1" />);
     fireEvent.click(screen.getByRole('button', { name: /DALL-E/ }));
-    expect(screen.queryByTestId('tool-detail')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('item-dialog')).not.toBeInTheDocument();
     expect(mockSetValue).toHaveBeenCalledWith(
       'tools',
       expect.arrayContaining(['dalle']),

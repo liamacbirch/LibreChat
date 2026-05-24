@@ -1,16 +1,23 @@
-import { Trash2 } from 'lucide-react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Button, Switch } from '@librechat/client';
+import { Switch } from '@librechat/client';
 import { ArtifactModes, AgentCapabilities } from 'librechat-data-provider';
-import type { AgentForm } from '~/common';
-import type { BuiltinId } from '../items/types';
+import type { AgentForm, ExtendedFile } from '~/common';
+import type { BuiltinId } from '../../items/types';
+import type { TranslationKeys } from '~/hooks/useLocalize';
+import FileContext from '../../../FileContext';
+import FileSearch from '../../../FileSearch';
+import FileSearchCheckbox from '../../../FileSearchCheckbox';
+import CodeFiles from '../../../Code/Files';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 
 interface Props {
   builtinId: BuiltinId;
   agentId: string;
-  onRemove: () => void;
+  contextFiles: Array<[string, ExtendedFile]>;
+  knowledgeFiles: Array<[string, ExtendedFile]>;
+  codeFiles: Array<[string, ExtendedFile]>;
+  description?: string;
 }
 
 interface ToggleRowProps {
@@ -64,19 +71,14 @@ function ModeTabs({ value, onChange, options }: ModeTabsProps) {
   );
 }
 
-interface StubProps {
-  message: string;
-}
-
-function PlaceholderStub({ message }: StubProps) {
-  return (
-    <div className="rounded-xl border border-dashed border-border-light p-4 text-center text-xs text-text-tertiary">
-      {message}
-    </div>
-  );
-}
-
-export default function BuiltinDetail({ builtinId, onRemove }: Props) {
+export default function BuiltinSection({
+  builtinId,
+  agentId,
+  contextFiles,
+  knowledgeFiles,
+  codeFiles,
+  description,
+}: Props) {
   const localize = useLocalize();
   const { control, setValue } = useFormContext<AgentForm>();
 
@@ -90,13 +92,16 @@ export default function BuiltinDetail({ builtinId, onRemove }: Props) {
 
   if (builtinId === 'execute_code') {
     body = (
-      <ToggleRow
-        label={localize('com_ui_run_code')}
-        checked={executeCodeValue}
-        onCheckedChange={(next) =>
-          setValue(AgentCapabilities.execute_code, next, { shouldDirty: true })
-        }
-      />
+      <div className="flex flex-col gap-4">
+        <ToggleRow
+          label={localize('com_ui_run_code')}
+          checked={executeCodeValue}
+          onCheckedChange={(next) =>
+            setValue(AgentCapabilities.execute_code, next, { shouldDirty: true })
+          }
+        />
+        <CodeFiles agent_id={agentId} files={codeFiles} />
+      </div>
     );
   } else if (builtinId === 'web_search') {
     body = (
@@ -109,7 +114,12 @@ export default function BuiltinDetail({ builtinId, onRemove }: Props) {
       />
     );
   } else if (builtinId === 'file_search') {
-    body = <PlaceholderStub message={localize('com_assistants_file_search_info')} />;
+    body = (
+      <div className="flex flex-col gap-4">
+        <FileSearchCheckbox />
+        <FileSearch agent_id={agentId} files={knowledgeFiles} />
+      </div>
+    );
   } else if (builtinId === 'artifacts') {
     body = (
       <ModeTabs
@@ -123,18 +133,17 @@ export default function BuiltinDetail({ builtinId, onRemove }: Props) {
       />
     );
   } else if (builtinId === 'context') {
-    body = <PlaceholderStub message={localize('com_agents_file_context_description')} />;
+    body = <FileContext agent_id={agentId} files={contextFiles} />;
   }
+
+  const localizedDescription = description ? localize(description as TranslationKeys) : '';
 
   return (
     <div className="flex flex-col gap-5">
+      {localizedDescription && (
+        <p className="text-sm leading-relaxed text-text-secondary">{localizedDescription}</p>
+      )}
       {body}
-      <div className="flex items-center justify-end gap-2 border-t border-border-light pt-4">
-        <Button variant="destructive" size="sm" onClick={onRemove}>
-          <Trash2 className="size-4" aria-hidden="true" />
-          {localize('com_ui_tools_remove')}
-        </Button>
-      </div>
     </div>
   );
 }
