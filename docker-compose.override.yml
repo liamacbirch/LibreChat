@@ -1,0 +1,11 @@
+services:
+  api:
+    restart: unless-stopped
+    volumes:
+      - ./librechat.yaml:/app/librechat.yaml
+      - /usr/local/bin/uvx:/usr/local/bin/uvx
+      - /usr/local/bin/uv:/usr/local/bin/uv
+  mongodb:
+    restart: unless-stopped
+  meilisearch:
+    restart: unless-stopped

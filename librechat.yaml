@@ -1,0 +1,50 @@
+version: 1.2.1
+
+interface:
+  privacyPolicy:
+    externalUrl: ""
+    openNewTab: false
+  termsOfService:
+    externalUrl: ""
+    openNewTab: false
+
+endpoints:
+  bedrock:
+    availableRegions:
+      - ap-southeast-2
+    titleModel: "au.anthropic.claude-haiku-4-5-20251001-v1:0"
+    models:
+      - "au.anthropic.claude-haiku-4-5-20251001-v1:0"
+      - "au.anthropic.claude-sonnet-4-5-20250929-v1:0"
+      - "au.anthropic.claude-sonnet-4-6"
+      - "au.anthropic.claude-opus-4-6-v1"
+      - "au.anthropic.claude-opus-4-7"
+      - "au.anthropic.claude-opus-4-8"
+      - "au.anthropic.claude-fable-5"
+      - "amazon.nova-micro-v1:0"
+      - "amazon.nova-lite-v1:0"
+      - "amazon.nova-pro-v1:0"
+      - "amazon.nova-2-lite-v1:0"
+      - "deepseek.v3.2"
+
+mcpServers:
+  mcp-atlassian:
+    command: uvx
+    args:
+      - "mcp-atlassian"
+      - "--jira-url=${ATLASSIAN_URL}"
+      - "--confluence-url=${ATLASSIAN_URL}/wiki"
+      - "--jira-username=${ATLASSIAN_EMAIL}"
+      - "--confluence-username=${ATLASSIAN_EMAIL}"
+      - "--jira-token=${ATLASSIAN_API_TOKEN}"
+      - "--confluence-token=${ATLASSIAN_API_TOKEN}"
+    timeout: 60000
+
+  figma:
+    command: npx
+    args:
+      - "-y"
+      - "figma-developer-mcp"
+      - "--figma-api-key=${FIGMA_API_KEY}"
+      - "--stdio"
+    timeout: 60000
